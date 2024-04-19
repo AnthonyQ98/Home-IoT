@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const mqttclient = mqtt.connect('mqtt://broker.hivemq.com:1883');
 
-const topic = 'home/temperature';
+const topic = ['home/temperature', 'home/humidity', 'home/lighting'];
 
 app.use(express.static('public'));
 
@@ -17,7 +17,7 @@ mqttclient.on('connect', () => {
     mqttclient.subscribe(topic);
 });
 
-mqttclient.on('messsage', (topic, message) => {
+mqttclient.on('message', (topic, message) => {
     console.log(`Received the message from ${topic}: ${message.toString()}`);
     io.emit('mqtt_message', message.toString());
 });

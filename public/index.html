@@ -12,7 +12,14 @@
     <script>
         const socket = io();
         socket.on('mqtt_message', function(msg) {
-            document.getElementById('data').innerHTML = `Temperature: ${msg} Degree Celcius`;
+            const data = JSON.parse(msg);
+            const temperature = parseInt(data.temperature);
+            if (temperature > 20) {
+                output = "HIGH!";
+            } else {
+                output = temperature + " degree celcius";
+            }
+            document.getElementById('data').innerHTML = `Temperature: ${output}`;
         });
     </script>
 </body>
