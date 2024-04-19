@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const mqttclient = mqtt.connect('mqtt://broker.hivemq.com:1883');
 
-const topic = ['home/temperature', 'home/humidity', 'home/lighting'];
+const topic = ['homeAnt/temperature', 'homeAnt/humidity', 'homeAnt/lighting'];
 
 app.use(express.static('public'));
 
@@ -19,8 +19,35 @@ mqttclient.on('connect', () => {
 
 mqttclient.on('message', (topic, message) => {
     console.log(`Received the message from ${topic}: ${message.toString()}`);
-    io.emit('mqtt_message', message.toString());
+    switch (topic) {
+        case "homeAnt/temperature":
+            handleTemperature(message.toString());
+            io.emit('homeAnt/temperature', message.toString());
+            break;
+        case "homeAnt/humidity":
+            handleHumidity(message.toString());
+            io.emit('homeAnt/humidity', message.toString());
+            break;
+        case "homeAnt/lighting":
+            handleLighting(message.toString());
+            io.emit('homeAnt/lighting', message.toString());
+            break;
+        default:
+            console.log("Unknown topic");
+    }
 });
+
+function handleTemperature(data) {
+    console.log(`Handling temperature data: ${data}`)
+}
+
+function handleHumidity(data) {
+    console.log(`Handling humidity data: ${data}`)
+}
+
+function handleLighting(data) {
+    console.log(`Handling lighting data: ${data}`)
+}
 
 io.on('connection', (socket) => {
     console.log(`A user is connected`);

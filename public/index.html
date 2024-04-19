@@ -7,20 +7,31 @@
 </head>
 <body>
     <h1>Temperature Data</h1>
-    <div id="data">Waiting for the data</div>
+    <div id="temperatureData">Waiting for the data</div>
+    <h1>Humidity Data</h1>
+    <div id="humidityData">Waiting for the data</div>
+    <h1>Lighting Data</h1>
+    <div id="lightingData">Waiting for the data</div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
-        socket.on('mqtt_message', function(msg) {
-            const data = JSON.parse(msg);
-            const temperature = parseInt(data.temperature);
-            if (temperature > 20) {
-                output = "HIGH!";
-            } else {
-                output = temperature + " degree celcius";
-            }
-            document.getElementById('data').innerHTML = `Temperature: ${output}`;
+        socket.on('homeAnt/temperature', function(msg) {
+            const data = JSON.parse(msg)
+            const temperature = data.temperature;
+            document.getElementById('temperatureData').innerHTML = `Temperature: ${temperature} Degree Celsius`;
         });
-    </script>
+    
+        socket.on('homeAnt/humidity', function(msg) {
+            const data = JSON.parse(msg)
+            const humidity = data.humidity;
+            document.getElementById('humidityData').innerHTML = `Humidity: ${humidity} %`;
+        });
+    
+        socket.on('homeAnt/lighting', function(msg) {
+            const data = JSON.parse(msg)
+            const lighting = data.lighting;
+            document.getElementById('lightingData').innerHTML = `Lighting: ${lighting}`;
+        });
+    </script>    
 </body>
 </html>
