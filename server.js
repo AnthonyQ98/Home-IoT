@@ -15,8 +15,19 @@ app.use(express.static('public'));
 mqttclient.on('connect', () => {
     console.log('MQTT client connected to the broker');
     mqttclient.subscribe(topic);
-})
+});
 
 mqttclient.on('messsage', (topic, message) => {
-    console.log(`Received the message from ${topic}: ${message.toString}`);
+    console.log(`Received the message from ${topic}: ${message.toString()}`);
+    io.emit('mqtt_message', message.toString());
+});
+
+io.on('connection', (socket) => {
+    console.log(`A user is connected`);
+});
+
+const PORT = process.env.PORT || 3000;
+
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
 })
